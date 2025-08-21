@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mathi jaam</title>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.70.0/dist/phaser.js"></script>
+</head>
+<body>
+<script>
+class MyGame extends Phaser.Scene {
+  constructor() {
+    super('MyGame');
+  }
+
+  preload() {
+    // Load TMX map (Phaser auto-converts XML -> JSON internally)
+    this.load.tilemapTiledJSON('map', 'maps/map.json');  
+    this.load.image('sky', 'assets/sky.jpg');
+    this.load.image('prabhat','maps/1bit 16px patterns and tiles - outlines.png');
+    this.load.image('prabhat2','maps/320px-Vikings_tilemaps_018.bmp.png');
+    this.load.image('prabhat3', 'maps/320px-Vikings_tilemaps_005.bmp.png');
+    
+    // Load player sprite 
+    this.load.spritesheet('player', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
+  }
+
+  create() {
+    // Create map
+    this.add.image(960, 540, 'sky'); // Background image
+    const map = this.make.tilemap({ key: 'map' });
+
+    const tileset = map.addTilesetImage('prabhat');
+    const tileset2 = map.addTilesetImage('prabhat2');
+    const tileset3 = map.addTilesetImage('prabhat3');
+    
+
+    // Layers    
+    const borderLayer = map.createLayer("border",[tileset,tileset2,tileset3] || undefined,0,0,);
+    const platformLayer = map.createLayer("platform",[tileset,tileset2,tileset3] || undefined,0,0,);
+    const flowerLayer = map.createLayer("Flower",[tileset,tileset2,tileset3] || undefined,0,0,);
+    const textLayer = map.createLayer("text",0,0);
+    const endLayer = map.createLayer("End", tileset, 0, 0);
+    
+borderLayer.setCollisionByExclusion([-1]);
+platformLayer.setCollisionByExclusion([-1]);
+endLayer.setCollisionByExclusion([-1]);
+
+    // Set the world bounds to match the map size
+    this.physics.world.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+    this.cameras.main.setBounds(0, 0, map.widthInPixels, map.heightInPixels);
+
+// set world bounds to match the map size
+                this.physics.world.setBounds(
+                    0,
+                    0,
+                    map.widthInPixels,
+                    map.heightInPixels,
+                );
+                this.cameras.main.setBounds(
+                    0,
+                    0,
+                    map.widthInPixels,
+                    map.heightInPixels,
+                );
+
+// create player and camera follow
+    this.player = this.physics.add.sprite(100,500, 'player').setScale(0.5);
+    this.player.setBounce(0.2);
+    this.player.setCollideWorldBounds(true);
+    this.player.body.setGravityY(250);
+
+    this.cameras.main.startFollow(this.player);
+    this.cameras.main.setZoom(2);
+
+// Physics collisions
+this.physics.add.collider(this.player, borderLayer);
+this.physics.add.collider(this.player, platformLayer);
+this.physics.add.collider(this.player, endLayer, () => {
+  this.showWinMessage();
+});
+                
+// Controls
+this.cursors = this.input.keyboard.createCursorKeys();
+this.restartKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
+
+
+// Animations
+this.anims.create({
+  key: 'left',
+  frames: this.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
+  frameRate: 10,
+  repeat: -1
+});
+
+this.anims.create({
+  key: 'turn',
+  frames: [ { key: 'player', frame: 4 } ],
+  frameRate: 20
+});
+
+this.anims.create({
+  key: 'right',
+  frames: this.anims.generateFrameNumbers('player', { start: 5, end: 8 }),
+  frameRate: 10,
+  repeat: -1
+});
+
+//rule
+this.rulesText = this.add.text(
+  this.cameras.main.width / 2.5,
+  this.cameras.main.height / 2.5,
+  "RULES:\n\n→ Use arrow keys to move\n→ Space to jump\n→ R to restart \nNote: some block are not real hahhahha",
+  {
+    fontSize: "20px",
+    color: "#ffffff",
+    backgroundColor: "#000000",
+    padding: { x: 10, y: 10 },
+    align: "center"
+  }
+)
+// FIXED TO CAMERA
+this.rulesText.setScrollFactor(0);
+
+  // Hide rules after a few seconds
+  this.time.delayedCall(4000, () => {
+    this.rulesText.destroy();
+  });
+
+
+  }
+
+  update() {
+    const speed = 200;
+    const jump = 400;
+
+    if (this.cursors.left.isDown) {
+  this.player.setVelocityX(-speed);
+  this.player.anims.play('left', true);
+}
+else if (this.cursors.right.isDown) {
+  this.player.setVelocityX(speed);
+  this.player.anims.play('right', true);
+}
+else if (this.cursors.up.isDown && this.player.body.blocked.down) {
+  this.player.setVelocityY(-jump);
+  this.player.anims.play('turn'); 
+}
+else {
+  this.player.setVelocityX(0);
+  this.player.anims.play('turn'); 
+}
+
+if (Phaser.Input.Keyboard.JustDown(this.restartKey)) {
+  this.scene.restart();
+}
+
+   
+  }
+  showWinMessage() {
+  // stop player movement
+  this.player.setVelocity(0, 0);
+  this.player.body.enable = false;
+
+  // add text in the center of the screen
+  this.winText = this.add.text(
+    this.cameras.main.width / 2,
+    this.cameras.main.height / 2,
+    "🎉 Congratulations!\nYou got 6000! \n→Made by Prabhat Nepal",
+    {
+      fontSize: "14px",
+      color: "#00ff00",
+      backgroundColor: "#000000",
+      padding: { x: 15, y: 10 },
+      align: "center"
+    }
+  ).setOrigin(0.5);
+
+  // fix it to camera
+  this.winText.setScrollFactor(0);
+}
+}
+const config = {
+  type: Phaser.AUTO,
+  width: 1920,
+  height: 1080,
+  physics: {
+    default: 'arcade',
+    arcade: { gravity: { y:600}, debug: false }
+  },
+  scene: MyGame
+
+  
+}
+
+new Phaser.Game(config);
+</script>
+</body>
+</html>

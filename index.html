@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mathi Jaam - Home</title>
+  <style>
+    /* Background - Futuristic animated gradient */
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #000);
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease infinite;
+      font-family: 'Orbitron', sans-serif;
+      color: #00ffea;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Game title */
+    h1 {
+      font-size: 60px;
+      margin-bottom: 30px;
+      text-shadow: 0 0 15px #00ffe0, 0 0 30px #00ffe0;
+      letter-spacing: 3px;
+      animation: pulse 2s infinite alternate;
+    }
+
+    @keyframes pulse {
+      from { text-shadow: 0 0 15px #00ffe0, 0 0 30px #00ffe0; }
+      to { text-shadow: 0 0 25px #00ffff, 0 0 50px #00ffff; }
+    }
+
+    /* Start button */
+    .start-btn {
+      background: transparent;
+      border: 2px solid #00ffe0;
+      color: #00ffe0;
+      padding: 15px 40px;
+      font-size: 20px;
+      text-transform: uppercase;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: 0.3s;
+      text-shadow: 0 0 5px #00ffe0;
+    }
+
+    .start-btn:hover {
+      background: #00ffe0;
+      color: #000;
+      box-shadow: 0 0 20px #00ffe0, 0 0 40px #00ffe0;
+    }
+
+    /* Help button "?" */
+    .help-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #00ffe0;
+      background: transparent;
+      color: #00ffe0;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      text-shadow: 0 0 5px #00ffe0;
+      transition: 0.3s;
+    }
+
+    .help-btn:hover {
+      background: #00ffe0;
+      color: #000;
+      box-shadow: 0 0 20px #00ffe0;
+    }
+
+    /* Popup modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: #111;
+      padding: 30px;
+      border: 2px solid #00ffe0;
+      border-radius: 15px;
+      color: #00ffe0;
+      text-align: center;
+      max-width: 400px;
+      box-shadow: 0 0 20px #00ffe0, 0 0 40px #00ffe0;
+    }
+
+    .close-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: transparent;
+      border: 2px solid #00ffe0;
+      color: #00ffe0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .close-btn:hover {
+      background: #00ffe0;
+      color: #000;
+    }
+
+    /* Disclaimer note */
+    .disclaimer {
+      position: absolute;
+      bottom: 50px;
+      font-size: 14px;
+      color: #ffcc00cc;
+      text-shadow: 0 0 10px #ffaa00, 0 0 20px #ffaa00;
+      font-style: italic;
+    }
+
+    /* Credits */
+    .credits {
+      position: absolute;
+      bottom: 20px;
+      font-size: 16px;
+      color: #ffffffaa;
+      letter-spacing: 1px;
+      text-shadow: 0 0 10px #00ffe0;
+    }
+  </style>
+
+  <!-- Google futuristic font -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <h1>Mathi Jaam</h1>
+  <button class="start-btn" onclick="startGame()">Start Game</button>
+  <button class="help-btn" onclick="openHelp()">?</button>
+
+  <!-- Modal -->
+  <div class="modal" id="helpModal">
+    <div class="modal-content">
+      <h2>About Mathi Jaam</h2>
+      <p>🎮 In this game, your goal is to climb higher and higher.  
+         Avoid falling into the ground, reach the top, and touch the "END" platform to win 6000!  
+         Also don’t be fooled by the blocks, some of them are not real!  
+         Good luck, adventurer 🚀</p>
+      <button class="close-btn" onclick="closeHelp()">Close</button>
+    </div>
+  </div>
+
+  <!-- Disclaimer -->
+  <div class="disclaimer">⚠️ Disclaimer: This game is in development phase. Please play on only on PC in fullscreen mode.</div>
+
+  <!-- Credits -->
+  <div class="credits">🚀 Designed by Prabhat Nepal</div>
+
+  <script>
+    function startGame() {
+      window.location.href = "game.html"; // game page
+    }
+
+    function openHelp() {
+      document.getElementById("helpModal").style.display = "flex";
+    }
+
+    function closeHelp() {
+      document.getElementById("helpModal").style.display = "none";
+    }
+  </script>
+</body>
+</html>
