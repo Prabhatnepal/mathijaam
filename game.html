@@ -38,7 +38,6 @@ class MyGame extends Phaser.Scene {
     const borderLayer = map.createLayer("border",[tileset,tileset2,tileset3],0,0);
     const platformLayer = map.createLayer("platform",[tileset,tileset2,tileset3],0,0);
     const flowerLayer = map.createLayer("Flower",[tileset,tileset2,tileset3],0,0);
-    const textLayer = map.createLayer("text", [tileset, tileset2, tileset3], 0, 0);
     const endLayer = map.createLayer("End", tileset, 0, 0);
     
     borderLayer.setCollisionByExclusion([-1]);
@@ -57,6 +56,17 @@ class MyGame extends Phaser.Scene {
 
     // Monsters group
     this.monster = this.physics.add.group();
+
+    const textObjects = map.getObjectLayer("text").objects;
+    textObjects.forEach(obj => {
+            this.add.text(obj.x, obj.y, obj.text.text, {
+                fontSize: `${obj.text.pixelsize || 16}px`,
+                fontFamily: obj.text.fontfamily || 'Arial',
+                color: obj.text.color || '#ffffff'
+            })
+            .setOrigin(0) // align properly (Tiled's text uses top-left origin)
+            .setScrollFactor(1); // make it move with the camera
+        });
 
     // Collisions
     this.physics.add.collider(this.monster, platformLayer);
@@ -99,7 +109,7 @@ class MyGame extends Phaser.Scene {
 
     this.anims.create({
     key: 'crawl',
-    frames: this.anims.generateFrameNumbers('monster', { frames: [21, 28,35] }), // replace with correct frame indexes
+    frames: this.anims.generateFrameNumbers('monster', { frames: [21, 28,35] }), 
     frameRate: 3,
     repeat: -1});
 
